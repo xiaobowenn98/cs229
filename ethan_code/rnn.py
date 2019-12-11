@@ -94,7 +94,7 @@ class neuralNet:
                       optimizer='adam',
                       metrics=['accuracy'])
 
-    def train(self, train_path, test_path, epochs = 5, batchSize = 10000, bigMem = False, trainLog = 'training.log', saveName = "model.h5"):
+    def train(self, train_path, test_path, epochs = 5, batchSize = 10000, bigMem = False, trainLog = 'training.log', saveName = "amazon_model.h5"):
         #csv_logger = CSVLogger(trainLog)
         testMessages, testLabels = load_dataset(test_path)
         testMessages = self.ed.embed(testMessages)
@@ -116,6 +116,11 @@ class neuralNet:
         # returns an array of predictions in [0,1]
         validEmbed = self.ed.embed(validData)
         return self.model.predict(validEmbed)
+
+    def predict_from_model(self, model_file, validData):
+        model_new = tf.keras.models.load_model(model_file)
+        validEmbed = self.ed.embed(validData)
+        return model_new.predict(validEmbed)
 
     def evaluate(self, validData, validLabels):
         validEmbed = self.ed.embed(validData)
