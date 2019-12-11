@@ -13,7 +13,7 @@ class Embedding:
         # Loads specified embedding into a dictionary
         # returns a dictionary where the key is a word and the value is the associated vector
         if self.embedding == 'glove':
-            path = 'glove.twitter.27B.200d.txt'
+            path = '../../project/glove.twitter.27B.200d.txt'
             self.dim = 200
         elif self.embedding == 'elmo':
             print("Not implemented yet")

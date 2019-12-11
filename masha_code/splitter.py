@@ -18,11 +18,10 @@ def read_char_lines(char_file):
 	label_dict= {}
 	chars =[]
 	for line in file.readlines():
-		line = line.replace("\n","")
+		line = line.replace("\n","").replace(" ","")
 		a = line.lower().split(',')
-		label_dict[a[1]] = a[0]
+		label_dict[a[1]] = a[0][-1::]
 		chars.append(a[1::])
-	print (chars)
 	return label_dict, chars
 
 
