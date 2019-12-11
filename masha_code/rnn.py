@@ -109,7 +109,7 @@ class neuralNet:
                       optimizer='adam',
                       metrics=['accuracy'])
             hist = self.model.fit_generator(generator = trainData, steps_per_epoch = int(np.ceil(trainData.trainSize / trainData.batchSize)), epochs=epochs, validation_data = (testMessages, testLabels), validation_steps = 1)#, use_multiprocessing = True, workers = 4)#, callbacks = [csv_logger]) 
-        self.model.save("model.h5")
+        self.model.save("model_amazon.h5")
         return hist
 
     def predict(self, validData):
@@ -117,7 +117,7 @@ class neuralNet:
         # returns an array of predictions in [0,1]
         validEmbed = self.ed.embed(validData)
         return self.model.predict(validEmbed)
-        
+
     def predict_from_model(self, validData):
         model_new = tf.keras.models.load_model("model.h5")
         validEmbed = self.ed.embed(validData)

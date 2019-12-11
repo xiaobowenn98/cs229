@@ -39,7 +39,7 @@ books_file_test_names = ["cinderella","rumplestiltskin", "blue_beard"]
 
 r_model = rnn.neuralNet()
 r_model.makeCRNN()
-hist = r_model.train('../../project/imdb_csv/imdb_train.csv', '../../project/imdb_csv/imdb_test.csv',bigMem=False)
+hist = r_model.train('../../project/amazon_csv/AmazonBooks_train.csv', '../../project/amazon_csv/AmazonBooks_test.csv',bigMem=False)
 # new_model = load_model("model.h5")
 total_char = 0.0
 correct = 0.0
