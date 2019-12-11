@@ -17,14 +17,14 @@ class CNN(rnn.neuralNet):
     def __init__(self, embedding = 'glove', maxLength = 100):
         self.ed = embed.Embedding(embedding, maxLength)
 
-    def makeCNN(self, maxLength = 100, dim = 200, kernel_size = 5, filters = 64, pool_size = 4):
+    def makeCNN(self, maxLength = 100, kernel_size = 5, filters = 64, pool_size = 4):
         self.model = Sequential()
         self.model.add(Conv1D(filters,
                  kernel_size,
                  padding='valid',
                  activation='relu',
                  strides=1, 
-                 input_shape=(maxLength, dim)))
+                 input_shape=(maxLength, self.ed.dim)))
         self.model.add(MaxPooling1D(pool_size=pool_size))
         self.model.add(Flatten())
         self.model.add(Dense(1))
@@ -33,12 +33,29 @@ class CNN(rnn.neuralNet):
                       optimizer='adam',
                       metrics=['accuracy'])
 
+class LSTM(rnn.neuralNet):
+    def __init__(self, embedding = 'glove', maxLength = 100):
+        self.ed = embed.Embedding(embedding, maxLength)
+
+    def makeLSTM(self, maxLength = 100, lstm_output_size = 70):
+        self.model = Sequential()
+        self.model.model.add(LSTM(dropout=0.2, recurrent_dropout=0.2, input_shape=(maxLength, self.ed.dim)))
+        self.model.add(Dense(1, activation='sigmoid'))
+        self.model.compile(loss='binary_crossentropy',
+                      optimizer='adam',
+                      metrics=['accuracy'])    
+
 def doPredict(valFile, Rnn):
-    sentences, labels = load_dataset(valFile)
+    sentences, labels = rnn.load_dataset(valFile)
     return Rnn.evaluate(sentences, labels)[1]
 
 def main():
-    
+    cnn = CNN(embedding='elmo')
+    cnn.makeCNN()
+    hist = cnn.train('IMDB_train_1000.csv',test_path='IMDB_test.csv',epochs=25,saveName='CNN_elmo_1000.h5',bigMem=False)
+    for test in ['IMDB_test.csv', 'AmazonBooks_test.csv', 'twitter_test.csv']:
+        with open('output_CNN_elmo.txt','a') as f:
+            print("Test: " + test + " Accuracy: " + str(doPredict(test, rnn)), file = f)
     #cnn = CNN()
     #cnn.makeCNN()
     #cnn.train('IMDB_train.csv','IMDB_test.csv',epochs = 15, saveName = 'cnn.h5')
