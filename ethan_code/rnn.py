@@ -1,14 +1,14 @@
 import numpy as np 
 import csv
 
-from tensorflow.keras.models import Sequential
+from keras.models import Sequential
 #from keras.layers.convolutional import *
 #from keras.layers.recurrent import *
 #from keras.layers.pooling import *
-from tensorflow.keras.layers import *
-#from tensorflow.keras.callbacks.callbacks import *
-from tensorflow.keras.utils import Sequence
-import util
+from keras.layers import *
+#from keras.callbacks.callbacks import *
+from keras.utils import Sequence
+
 import embed
 import itertools
 
@@ -50,7 +50,6 @@ class BatchData(Sequence):
         return messageEmbed, labels
 
     def loadDataset(self, start, end):
-        print(end - start)
         labels = []
         sentences = []
         with open(self.trainPath, 'r', encoding='ISO-8859-1') as dataFile:
@@ -95,7 +94,7 @@ class neuralNet:
                       optimizer='adam',
                       metrics=['accuracy'])
 
-    def train(self, train_path, test_path, epochs = 5, batchSize = 10000, bigMem = False, trainLog = 'training.log'):
+    def train(self, train_path, test_path, epochs = 5, batchSize = 10000, bigMem = False, trainLog = 'training.log', saveName = "model.h5"):
         #csv_logger = CSVLogger(trainLog)
         testMessages, testLabels = load_dataset(test_path)
         testMessages = self.ed.embed(testMessages)
@@ -104,11 +103,12 @@ class neuralNet:
             messages = self.ed.embed(messages)
             hist = self.model.fit(messages, labels, epochs=epochs, batch_size=batchSize, validation_data=(testMessages, testLabels))#,callbacks=[csv_logger])
         if bigMem == True:
-            trainData = BatchData(50000, train_path, self.ed)
+            trainData = BatchData(batchSize, train_path, self.ed)
             self.model.compile(loss='binary_crossentropy',
                       optimizer='adam',
                       metrics=['accuracy'])
             hist = self.model.fit_generator(generator = trainData, steps_per_epoch = int(np.ceil(trainData.trainSize / trainData.batchSize)), epochs=epochs, validation_data = (testMessages, testLabels), validation_steps = 1)#, use_multiprocessing = True, workers = 4)#, callbacks = [csv_logger]) 
+        self.model.save(saveName)
         return hist
 
     def predict(self, validData):
@@ -116,16 +116,25 @@ class neuralNet:
         # returns an array of predictions in [0,1]
         validEmbed = self.ed.embed(validData)
         return self.model.predict(validEmbed)
+
+    def evaluate(self, validData, validLabels):
+        validEmbed = self.ed.embed(validData)
+        return self.model.evaluate(validEmbed, validLabels)
                 
+def doPredict(valFile, rnn):
+    sentences, labels = load_dataset(valFile)
+    return rnn.evaluate(sentences, labels)[1]
+
 def main():
-    rnn = neuralNet()
-    rnn.makeCRNN()
-    hist = rnn.train('IMDB_train.csv', 'IMDB_test.csv',bigMem=False)
-    sentences, labels = load_dataset('AmazonBooks_test.csv')
-    listOlists = []
-    for sentence in sentences:
-        listOlists.append(get_words(sentence))
-    rnn.predict(listOlists)
+    
+    with open('output.txt','a') as f:
+        for train, mem, epoch, name in zip(['IMDB_train.csv', 'AmazonBooks_train.csv', 'twitter_train.csv'], [False, True, True], [20, 2, 2], ['IMDB','AmazonBooks','twitter']):
+            rnn = neuralNet()
+            rnn.makeCRNN()
+            hist = rnn.train(train, 'IMDB_test.csv',bigMem=mem, epochs = epoch, saveName=name)
+
+            for test in ['IMDB_test.csv', 'AmazonBooks_test.csv', 'twitter_test.csv']:
+                print("Train: " + train + " Test: " + test + " Accuracy: " + str(doPredict(test, rnn)), file = f)
     #ed = embed.Embedding()
     #bd = BatchData(10000, 'IMDB_train.csv', ed)
     #print(bd.trainSize)
