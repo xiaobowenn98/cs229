@@ -12,8 +12,11 @@ def analyze_book(model_predict_function, splitter, book, characters):
 	lines, character_list = splitter(book, characters)
 	# print (character_list)
 	# clean_input = [clean_and_process(line) for line in lines]
-	output = model_predict_function(lines)
+	output = model_predict_function("amazon_model.h5",lines)
 	# print (output)
+	df = pd.DataFrame(lines, output)
+	df.to_csv("book.csv")
+	
 	character_score_counts = {}
 	character_score_avarages = {}
 	for i in range(len(output)):
@@ -30,7 +33,6 @@ def analyze_book(model_predict_function, splitter, book, characters):
 
 # def analyze_book_weighted_split(model_predict_function, splitter, book, characters)
 def fake_model(list_of_lists):
-	# print (list_of_lists)
 	return [[0]*len(list_of_lists)]
 
 books_file_train_names = ["ashputtel","ThePhantomTollbooth", "beauty_beast"]
@@ -38,8 +40,8 @@ books_file_test_names = ["cinderella","rumplestiltskin", "blue_beard"]
 # model_new = tf.keras.models.load_model("model.h5")
 
 r_model = rnn.neuralNet()
-r_model.makeCRNN()
-hist = r_model.train('../../project/amazon_csv/AmazonBooks_train.csv', '../../project/amazon_csv/AmazonBooks_test.csv',bigMem=False)
+# r_model.makeCRNN()
+# hist = r_model.train('../../project/amazon_csv/AmazonBooks_train.csv', '../../project/amazon_csv/AmazonBooks_test.csv',bigMem=True)
 # new_model = load_model("model.h5")
 total_char = 0.0
 correct = 0.0
@@ -50,7 +52,7 @@ for book in books_file_train_names:
 	label_dict, chars = read_char_lines(char_file)
 	# char_avarages = analyze_book()
 	# print (analyze_book(r_model.predict, splitter, book_file, chars))
-	char_score_dict2 = analyze_book(r_model.predict, splitter, book_file, chars)
+	# char_score_dict2 = analyze_book(r_model.predict, splitter, book_file, chars)
 	char_score_dict = analyze_book(r_model.predict_from_model, splitter, book_file, chars)
 
 	for key in char_score_dict.keys():
@@ -58,9 +60,11 @@ for book in books_file_train_names:
 		if int(round(char_score_dict[key][0])) == int(label_dict[key]):
 			print ("correctly labeled: " + key +"with value: " +str(char_score_dict[key]))
 			correct +=1
-		if int(round(char_score_dict2[key][0])) == int(label_dict[key]):
-			print ("correctly labeled: " + key +"with value: " +str(char_score_dict[key]))
-			correct2 +=1
+		else:
+			print ("incorrectly labeled: " + key +"with value: " +str(char_score_dict[key]))
+		# if int(round(char_score_dict2[key][0])) == int(label_dict[key]):
+			# print ("correctly labeled: " + key +"with value: " +str(char_score_dict[key]))
+			# correct2 +=1
 		# if char_score_dict2[key][0]!= character_score_dict[key]:
 			# print ("models conflict")
 		total_char +=1

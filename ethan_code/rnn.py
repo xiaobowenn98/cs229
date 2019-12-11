@@ -8,6 +8,7 @@ from keras.models import Sequential
 from keras.layers import *
 #from keras.callbacks.callbacks import *
 from keras.utils import Sequence
+import tensorflow as tf
 
 import embed
 import itertools
