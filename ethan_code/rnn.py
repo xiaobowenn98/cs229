@@ -1,13 +1,13 @@
 import numpy as np 
-import pandas as pd
 import csv
-from keras.models import Sequential
+
+from tensorflow.keras.models import Sequential
 #from keras.layers.convolutional import *
 #from keras.layers.recurrent import *
 #from keras.layers.pooling import *
-from keras.layers import *
-from keras.callbacks.callbacks import *
-from keras.utils import Sequence
+from tensorflow.keras.layers import *
+#from tensorflow.keras.callbacks.callbacks import *
+from tensorflow.keras.utils import Sequence
 import util
 import embed
 import itertools
@@ -96,25 +96,25 @@ class neuralNet:
                       metrics=['accuracy'])
 
     def train(self, train_path, test_path, epochs = 5, batchSize = 10000, bigMem = False, trainLog = 'training.log'):
-        csv_logger = CSVLogger(trainLog)
+        #csv_logger = CSVLogger(trainLog)
         testMessages, testLabels = load_dataset(test_path)
         testMessages = self.ed.embed(testMessages)
         if bigMem == False:
             messages, labels = load_dataset(train_path)
             messages = self.ed.embed(messages)
-            hist = self.model.fit(messages, labels, epochs=epochs, batch_size=batchSize, validation_data=(testMessages, testLabels),callbacks=[csv_logger])
+            hist = self.model.fit(messages, labels, epochs=epochs, batch_size=batchSize, validation_data=(testMessages, testLabels))#,callbacks=[csv_logger])
         if bigMem == True:
             trainData = BatchData(50000, train_path, self.ed)
             self.model.compile(loss='binary_crossentropy',
                       optimizer='adam',
                       metrics=['accuracy'])
-            hist = self.model.fit_generator(generator = trainData, steps_per_epoch = int(np.ceil(trainData.trainSize / trainData.batchSize)), epochs=epochs, validation_data = (testMessages, testLabels), validation_steps = 1, use_multiprocessing = True, workers = 4, callbacks = [csv_logger]) 
+            hist = self.model.fit_generator(generator = trainData, steps_per_epoch = int(np.ceil(trainData.trainSize / trainData.batchSize)), epochs=epochs, validation_data = (testMessages, testLabels), validation_steps = 1)#, use_multiprocessing = True, workers = 4)#, callbacks = [csv_logger]) 
         return hist
 
     def predict(self, validData):
         # validData: a list of lists of strings (a list of sentences, each of which is a list of words)
         # returns an array of predictions in [0,1]
-        validEmbed = ed.embed(validData)
+        validEmbed = self.ed.embed(validData)
         return self.model.predict(validEmbed)
                 
 def main():
