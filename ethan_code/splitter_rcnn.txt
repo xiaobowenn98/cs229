@@ -1,0 +1,31 @@
+ncorrectly labeled: sisterswith value: 0.7196023464202881
+correctly labeled: ashputtelwith value: 0.5027755137000766
+incorrectly labeled: motherwith value: 0.5686638653278351
+correctly labeled: princewith value: 0.5823364667594433
+Embedding text
+1 messages were too long to be fully embedded; consider increasing embedding length or splitting sentences
+incorrectly labeled: milowith value: 0.44734581714620986
+incorrectly labeled: tockwith value: 0.4115292525839532
+incorrectly labeled: reasonwith value: 0.4635771725858961
+incorrectly labeled: azazwith value: 0.5234761131661279
+incorrectly labeled: rhymewith value: 0.49957319392877464
+incorrectly labeled: mathemagicianwith value: 0.5470636761188508
+Embedding text
+2 messages were too long to be fully embedded; consider increasing embedding length or splitting sentences
+correctly labeled: fatherwith value: 0.6171467304229736
+correctly labeled: beautywith value: 0.5972127390431834
+Embedding text
+correctly labeled: treewith value: 0.5672246714433035
+correctly labeled: boywith value: 0.49792891144752505
+Embedding text
+48 messages were too long to be fully embedded; consider increasing embedding length or splitting sentences
+incorrectly labeled: villefortwith value: 0.5166269053998379
+correctly labeled: edmondwith value: 0.5378242300974356
+incorrectly labeled: danglarswith value: 0.5058095570288452
+correctly labeled: fernandwith value: 0.47911517788665464
+Embedding text
+2 messages were too long to be fully embedded; consider increasing embedding length or splitting sentences
+incorrectly labeled: hamletwith value: 0.4408220291420182
+incorrectly labeled: claudiuswith value: 0.5174872875213623
+0.4
+

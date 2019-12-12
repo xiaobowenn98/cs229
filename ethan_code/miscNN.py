@@ -5,6 +5,7 @@ from keras.models import Sequential
 #from keras.layers.recurrent import *
 #from keras.layers.pooling import *
 from keras.layers import *
+from keras.layers import LSTM
 #from keras.callbacks.callbacks import *
 from keras.utils import Sequence
 import embed
@@ -39,7 +40,8 @@ class LSTM(rnn.neuralNet):
 
     def makeLSTM(self, maxLength = 100, lstm_output_size = 70):
         self.model = Sequential()
-        self.model.model.add(LSTM(dropout=0.2, recurrent_dropout=0.2, input_shape=(maxLength, self.ed.dim)))
+        self.model.add(LSTM(70))
+        # self.modell.add(Dropout(.2))
         self.model.add(Dense(1, activation='sigmoid'))
         self.model.compile(loss='binary_crossentropy',
                       optimizer='adam',
@@ -50,12 +52,12 @@ def doPredict(valFile, Rnn):
     return Rnn.evaluate(sentences, labels)[1]
 
 def main():
-    cnn = CNN(embedding='elmo')
-    cnn.makeCNN()
-    hist = cnn.train('IMDB_train_1000.csv',test_path='IMDB_test.csv',epochs=25,saveName='CNN_elmo_1000.h5',bigMem=False)
-    for test in ['IMDB_test.csv', 'AmazonBooks_test.csv', 'twitter_test.csv']:
+    lstm = LSTM(embedding='glove')
+    lstm.makeLSTM()
+    hist = lstm.train('../../project/imdb_train.csv',test_path='../../project/imdb_test.csv',epochs=25,saveName='RNN_glove.h5',bigMem=False)
+    for test in ['../../project/imdb_test.csv', '../../project/AmazonBooks_test.csv', '../../project/twitter_test.csv']:
         with open('output_CNN_elmo.txt','a') as f:
-            print("Test: " + test + " Accuracy: " + str(doPredict(test, rnn)), file = f)
+            print("Test: " + test + " Accuracy: " + str(doPredict(test, lstm)), file = f)
     #cnn = CNN()
     #cnn.makeCNN()
     #cnn.train('IMDB_train.csv','IMDB_test.csv',epochs = 15, saveName = 'cnn.h5')
