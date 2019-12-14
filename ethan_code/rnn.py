@@ -1,6 +1,5 @@
 import numpy as np 
 import csv
-
 from keras.models import Sequential
 #from keras.layers.convolutional import *
 #from keras.layers.recurrent import *
@@ -8,10 +7,9 @@ from keras.models import Sequential
 from keras.layers import *
 #from keras.callbacks.callbacks import *
 from keras.utils import Sequence
-import tensorflow as tf
-
 import embed
 import itertools
+import tensorflow as tf
 
 def get_words(message):
         message = message.replace("."," ").replace(",", " ")
@@ -72,21 +70,16 @@ class BatchData(Sequence):
 class neuralNet:
     def __init__(self, embedding = 'glove', maxLength = 100):
         self.ed = embed.Embedding(embedding, maxLength)
-
-    def makeModel(self, layers, kernel):
-        self.model = Sequential()
-        self.model.add(GRU(units = layers[1], activation = 'sigmoid',return_sequences=True))
-        self.model.add(Conv2D(filters=layers[2],kernel_size=kernel, activation = 'relu'))
-        self.model.add(GlobalAveragePooling2D())
+        self.maxLength = maxLength
         
-    def makeCRNN(self, maxLength = 100, dim = 200, kernel_size = 5, filters = 64, pool_size = 4, lstm_output_size = 70):
+    def makeCRNN(self, kernel_size = 5, filters = 64, pool_size = 4, lstm_output_size = 70):
         self.model = Sequential()
         self.model.add(Conv1D(filters,
                  kernel_size,
                  padding='valid',
                  activation='relu',
                  strides=1, 
-                 input_shape=(maxLength, dim)))
+                 input_shape=(self.maxLength, self.ed.dim)))
         self.model.add(MaxPooling1D(pool_size=pool_size))
         self.model.add(LSTM(lstm_output_size))
         self.model.add(Dense(1))
@@ -95,7 +88,7 @@ class neuralNet:
                       optimizer='adam',
                       metrics=['accuracy'])
 
-    def train(self, train_path, test_path, epochs = 5, batchSize = 10000, bigMem = False, trainLog = 'training.log', saveName = "amazon_model.h5"):
+    def train(self, train_path, test_path, epochs = 5, batchSize = 10000, bigMem = False, trainLog = 'training.log', saveName = "model.h5"):
         #csv_logger = CSVLogger(trainLog)
         testMessages, testLabels = load_dataset(test_path)
         testMessages = self.ed.embed(testMessages)
@@ -132,14 +125,18 @@ def doPredict(valFile, rnn):
     return rnn.evaluate(sentences, labels)[1]
 
 def main():
-    
-    with open('output.txt','a') as f:
-        for train, mem, epoch, name in zip(['IMDB_train.csv', 'AmazonBooks_train.csv', 'twitter_train.csv'], [False, True, True], [20, 2, 2], ['IMDB','AmazonBooks','twitter']):
-            rnn = neuralNet()
-            rnn.makeCRNN()
-            hist = rnn.train(train, 'IMDB_test.csv',bigMem=mem, epochs = epoch, saveName=name)
-
-            for test in ['IMDB_test.csv', 'AmazonBooks_test.csv', 'twitter_test.csv']:
+    #rnn = neuralNet()
+    #rnn.makeCRNN()
+    #hist = rnn.train('IMDB_train_1000.csv',test_path='IMDB_test.csv',epochs=15,saveName='CRNN_IMDb_1000.h5',bigMem=False)
+    #for test in ['IMDB_test.csv', 'AmazonBooks_test.csv', 'twitter_test.csv']:
+    #    with open('output_CRNN_1000_glove.txt','a') as f:
+    #        print("Test: " + test + " Accuracy: " + str(doPredict(test, rnn)), file = f)
+    for train, mem, epoch, name, maxLen in zip(['IMDB_train.csv', 'AmazonBooks_train.csv', 'twitter_train.csv'], [False, True, True], [40, 1, 1], ['IMDBv2.h5','AmazonBooksv2.h5','twitterv2.h5'], [200, 200, 100]):
+        rnn = neuralNet(maxLength=maxLen)
+        rnn.makeCRNN()
+        hist = rnn.train(train, 'IMDB_test.csv',bigMem=mem, epochs = epoch, saveName=name)
+        for test in ['IMDB_test.csv', 'AmazonBooks_test.csv', 'twitter_test.csv']:
+            with open('outputv2.txt','a') as f:
                 print("Train: " + train + " Test: " + test + " Accuracy: " + str(doPredict(test, rnn)), file = f)
     #ed = embed.Embedding()
     #bd = BatchData(10000, 'IMDB_train.csv', ed)

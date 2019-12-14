@@ -50,12 +50,12 @@ def doPredict(valFile, Rnn):
     return Rnn.evaluate(sentences, labels)[1]
 
 def main():
-    cnn = CNN(embedding='elmo')
+    cnn = CNN()
     cnn.makeCNN()
-    hist = cnn.train('IMDB_train_1000.csv',test_path='IMDB_test.csv',epochs=25,saveName='CNN_elmo_1000.h5',bigMem=False)
+    hist = cnn.train('twitter_train.csv',test_path='twitter_test.csv',epochs=1,saveName='CNN_t.h5',bigMem=True)
     for test in ['IMDB_test.csv', 'AmazonBooks_test.csv', 'twitter_test.csv']:
-        with open('output_CNN_elmo.txt','a') as f:
-            print("Test: " + test + " Accuracy: " + str(doPredict(test, rnn)), file = f)
+        with open('output_CNN_t.txt','a') as f:
+            print("Test: " + test + " Accuracy: " + str(doPredict(test, cnn)), file = f)
     #cnn = CNN()
     #cnn.makeCNN()
     #cnn.train('IMDB_train.csv','IMDB_test.csv',epochs = 15, saveName = 'cnn.h5')
