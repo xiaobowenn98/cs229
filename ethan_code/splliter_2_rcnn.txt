@@ -1,0 +1,27 @@
+incorrectly labeled: sisterswith value: 0.7045160404273442
+incorrectly labeled: motherwith value: 0.5431714951992035
+correctly labeled: ashputtelwith value: 0.5010192715204679
+correctly labeled: princewith value: 0.5970142212781039
+Embedding text
+correctly labeled: milowith value: 0.5228489899386962
+incorrectly labeled: tockwith value: 0.457837937772274
+correctly labeled: reasonwith value: 0.5501422360539436
+incorrectly labeled: azazwith value: 0.6043797570925492
+correctly labeled: rhymewith value: 0.5563863944262266
+incorrectly labeled: mathemagicianwith value: 0.5299882560968399
+Embedding text
+correctly labeled: fatherwith value: 0.6469859808683396
+correctly labeled: beautywith value: 0.6838221310979069
+Embedding text
+incorrectly labeled: boywith value: 0.6804951876401901
+correctly labeled: treewith value: 0.6781716644763947
+Embedding text
+incorrectly labeled: villefortwith value: 0.544913351846886
+correctly labeled: edmondwith value: 0.5550699283966439
+incorrectly labeled: danglarswith value: 0.5607804231109991
+incorrectly labeled: fernandwith value: 0.5022996618197515
+Embedding text
+correctly labeled: hamletwith value: 0.5586759940136311
+incorrectly labeled: claudiuswith value: 0.8385860919952393
+0.5
+

@@ -5,6 +5,7 @@ from keras.models import Sequential
 #from keras.layers.recurrent import *
 #from keras.layers.pooling import *
 from keras.layers import *
+from keras.layers import LSTM
 #from keras.callbacks.callbacks import *
 from keras.utils import Sequence
 import embed
@@ -39,7 +40,8 @@ class LSTM(rnn.neuralNet):
 
     def makeLSTM(self, maxLength = 100, lstm_output_size = 70):
         self.model = Sequential()
-        self.model.model.add(LSTM(dropout=0.2, recurrent_dropout=0.2, input_shape=(maxLength, self.ed.dim)))
+        self.model.add(LSTM(70))
+        # self.modell.add(Dropout(.2))
         self.model.add(Dense(1, activation='sigmoid'))
         self.model.compile(loss='binary_crossentropy',
                       optimizer='adam',
